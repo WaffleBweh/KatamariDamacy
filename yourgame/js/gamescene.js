@@ -1,3 +1,25 @@
+GamePhysics = pc.systems.Physics.extend('GamePhysics',
+        {},
+        {
+            onCollisionStart: function(aType, bType, entityA, entityB, force,
+                    fixtureAType, fixtureBType, contact)
+            {
+                if (entityA.hasTag('DUCK') && entityB.hasTag('BALL')) {
+                    console.log('isCollisionAndTagged');
+                    console.log(entityA);
+                    console.log(entityB);
+                    this.monsterJoint = pc.components.Joint.create({
+                        attachedTo: this.entityB,
+                        type: pc.JointType.REVOLUTE,
+                        offset: {x: -48, y: 0},
+                        attachmentOffset: {x: 0, y: 0},
+                        maxMotorTorque: 200,
+                        motorSpeed: 0,
+                        enableMotor: true
+                    });
+                }
+            }
+        });
 GameScene = pc.Scene.extend('GameScene',
         {},
         {
@@ -26,6 +48,7 @@ GameScene = pc.Scene.extend('GameScene',
                 this.backgroundLayer = this.addLayer(new pc.EntityLayer('background layer', 10000, 10000));
                 this.gameLayer = this.addLayer(new pc.EntityLayer('game layer', 10000, 10000));
                 // On lance les systèmes
+                this.gameLayer.addSystem(new GamePhysics({gravity: {x: 0, y: 0}, debug: false}));
                 this.gameLayer.addSystem(new pc.systems.Render());
                 this.gameLayer.addSystem(new pc.systems.Effects());
                 this.gameLayer.addSystem(new pc.systems.Physics());
@@ -55,13 +78,12 @@ GameScene = pc.Scene.extend('GameScene',
                 this.ballPhysics = this.ball.getComponent('physics');
                 //On ajoute des monstres
                 this.duck = this.entityFactory.createEntity('duck', this.gameLayer, 0, 0, 0);
-
                 //On ajoute un joint
                 this.ballJoint = pc.components.Joint.create({
                     attachedTo: this.player,
                     type: pc.JointType.REVOLUTE,
-                    offset: {x: -48, y: 0}, // where on the barrel the joint is
-                    attachmentOffset: {x: 0, y: 0}, // where on the cannon base the joint is
+                    offset: {x: -48, y: 0},
+                    attachmentOffset: {x: 0, y: 0},
                     maxMotorTorque: 200,
                     motorSpeed: 0,
                     enableMotor: true
@@ -116,23 +138,10 @@ GameScene = pc.Scene.extend('GameScene',
                     this.playerPhysics.applyForce(20);
                     this.ballJoint.setMotorSpeed(2);
                 }
-                if ((Math.random() * 1000) + 1 > 995) {
-                    this.duck = this.entityFactory.createEntity('duck', this.gameLayer, 0, pc.device.canvasHeight / 2, 0);
-                } else if ((Math.random() * 1000) + 1 > 995) {
-                    this.duck = this.entityFactory.createEntity('duck', this.gameLayer, pc.device.canvasWidth - 256, pc.device.canvasHeight / 2, 0);
+                if ((Math.random() * 1000) + 1 > 999) {
+                    this.duck = this.entityFactory.createEntity('duck', this.gameLayer, 0, pc.device.canvasHeight - 100, 0);
+                } else if ((Math.random() * 1000) + 1 > 999) {
+                    this.duck = this.entityFactory.createEntity('duck', this.gameLayer, pc.device.canvasWidth - 200, pc.device.canvasHeight - 100, 0);
                 }
             },
-            onCollisionStart: function(aType, bType, entityA, entityB, fixtureAType,
-                    fixtureBType, contact)
-            {
-                if (entityA.hasTag('DUCK') && entityB.hasTag('BALL')) {
-                    this.monsterJoint = pc.components.Joint.create({
-                        attachedTo: this.ball,
-                        type: pc.JointType.REVOLUTE,
-                        offset: {x: -48, y: 0}, // where on the barrel the joint is
-                        attachmentOffset: {x: 0, y: 0}, // where on the cannon base the joint is
-                    });
-                    this.ball.addComponent(this.monsterJoint);
-                }
-            }
         });
