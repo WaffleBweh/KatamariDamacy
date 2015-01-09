@@ -1,3 +1,4 @@
+//AI Pour les monstres
 BrainSystem = pc.systems.EntitySystem.extend('BrainSystem',
         {},
         {

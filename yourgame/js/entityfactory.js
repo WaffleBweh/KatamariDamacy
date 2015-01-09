@@ -1,3 +1,4 @@
+//On déclare les types de colisions
 CollisionType =
         {
             NONE: 0x0000, // BIT MAP
@@ -23,9 +24,11 @@ EntityFactory = pc.EntityFactory.extend('EntityFactory',
     },
     createEntity: function(type, layer, x, y, dir, attachTo)
     {
+        //La fonction create entity permet de créer des entités et de les afficher a l'écran
         var e = null;
         switch (type)
         {
+            //On crée un joueur
             case 'player':
                 e = pc.Entity.create(layer);
                 e.addTag('PLAYER');
@@ -46,6 +49,7 @@ EntityFactory = pc.EntityFactory.extend('EntityFactory',
                             collisionMask: CollisionType.ENEMY
                         }));
                 return e;
+            //On crée les murs en X
             case 'wallX' :
                 var e = pc.Entity.create(layer);
                 e.addTag('WALL');
@@ -57,6 +61,7 @@ EntityFactory = pc.EntityFactory.extend('EntityFactory',
                     ]
                 }));
                 return e;
+            //On crée les murs en Y
             case 'wallY' :
                 var e = pc.Entity.create(layer);
                 e.addTag('WALL');
@@ -68,6 +73,7 @@ EntityFactory = pc.EntityFactory.extend('EntityFactory',
                     ]
                 }));
                 return e;
+            //On crée une balle
             case 'ball':
                 e = pc.Entity.create(layer);
                 e.addTag('BALL');
@@ -88,6 +94,7 @@ EntityFactory = pc.EntityFactory.extend('EntityFactory',
                             collisionMask: CollisionType.ENEMY
                         }));
                 return e;
+            //On crée un canard
             case 'duck':
                 e = pc.Entity.create(layer);
                 e.addTag('DUCK');
